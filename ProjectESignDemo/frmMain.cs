@@ -527,71 +527,7 @@ namespace ProjectESignDemo
 
         private void frmMain_Shown(object sender, EventArgs e)
         {
-            run_backgroud(() =>
-            {
-                Action action_lblNotification = () =>
-                {
-                    lblNotification.Text = "Đang lấy danh sách chữ ký số!";
-                };
-                lblNotification.Invoke(action_lblNotification);
-
-                List<header_param> header_Params = new List<header_param>();
-                header_Params.Add(new header_param("Authorization", $"Bearer {Program.TOKEN}"));
-                header_Params.Add(new header_param("x-clientid", $"{_clientId}"));
-                header_Params.Add(new header_param("x-clientkey", $"{_clientKey}"));
-                response_data<List<CertificateRespone>> certs = Program.RESTful_Action
-                                                                       .Call_Request<null_model, List<CertificateRespone>>(
-                                                                            HttpMethod.Get,
-                                                                            Program.Configuration["URL_GET_CERT"],
-                                                                            header_Params,
-                                                                            null);
-                if (certs.code == (int)HttpStatusCode.OK && certs.data.Count > 0)
-                {
-                    list_cert = certs.data;
-                    list_cert.ForEach(item => {
-                        item.certificate = item.certificate.Replace("\r\n", "");
-                    });
-                    Action action_loader = () =>
-                    {
-                        foreach (var item in list_cert)
-                        {
-                            cbbList_Cert.Items.Add(item.certKey);
-                        }
-                        cbbList_Cert.SelectedIndex = 0;
-
-                        btnLogout.Enabled = true;
-                        btnImgLogo.Enabled = true;
-                        btnImgSignature.Enabled = true;
-                        btnPathChooseSign.Enabled = true;
-                        btnSign.Enabled = true;
-                    };
-                    cbbList_Cert.Invoke(action_loader);
-                    action_lblNotification = () =>
-                    {
-                        lblNotification.Text = "";
-                    };
-                    lblNotification.Invoke(action_lblNotification);
-                }
-                else
-                {
-                    if (certs.code == (int)HttpStatusCode.OK)
-                    {
-                        action_lblNotification = () =>
-                        {
-                            lblNotification.Text = "Không chữ ký số nào trong tài khoản!";
-                        };
-                        lblNotification.Invoke(action_lblNotification);
-                    }
-                    else
-                    {
-                        action_lblNotification = () =>
-                        {
-                            lblNotification.Text = "Gọi api lấy danh sách chữ ký số bị lỗi!";
-                        };
-                        lblNotification.Invoke(action_lblNotification);
-                    }
-                }
-            });
+            GetCer();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
@@ -675,6 +611,79 @@ namespace ProjectESignDemo
             });
 
             
+        }
+
+        private void btnGetCer_Click(object sender, EventArgs e)
+        {
+            GetCer();
+        }
+        void GetCer()
+        {
+            run_backgroud(() =>
+            {
+                Action action_lblNotification = () =>
+                {
+                    lblNotification.Text = "Đang lấy danh sách chữ ký số!";
+                };
+                lblNotification.Invoke(action_lblNotification);
+
+                List<header_param> header_Params = new List<header_param>();
+                header_Params.Add(new header_param("Authorization", $"Bearer {Program.TOKEN}"));
+                header_Params.Add(new header_param("x-clientid", $"{_clientId}"));
+                header_Params.Add(new header_param("x-clientkey", $"{_clientKey}"));
+                response_data<List<CertificateRespone>> certs = Program.RESTful_Action
+                                                                       .Call_Request<null_model, List<CertificateRespone>>(
+                                                                            HttpMethod.Get,
+                                                                            Program.Configuration["URL_GET_CERT"],
+                                                                            header_Params,
+                                                                            null);
+                if (certs.code == (int)HttpStatusCode.OK && certs.data.Count > 0)
+                {
+                    list_cert = certs.data;
+                    list_cert.ForEach(item => {
+                        item.certificate = item.certificate.Replace("\r\n", "");
+                    });
+                    Action action_loader = () =>
+                    {
+                        foreach (var item in list_cert)
+                        {
+                            cbbList_Cert.Items.Add(item.certKey);
+                        }
+                        cbbList_Cert.SelectedIndex = 0;
+
+                        btnLogout.Enabled = true;
+                        btnImgLogo.Enabled = true;
+                        btnImgSignature.Enabled = true;
+                        btnPathChooseSign.Enabled = true;
+                        btnSign.Enabled = true;
+                    };
+                    cbbList_Cert.Invoke(action_loader);
+                    action_lblNotification = () =>
+                    {
+                        lblNotification.Text = "";
+                    };
+                    lblNotification.Invoke(action_lblNotification);
+                }
+                else
+                {
+                    if (certs.code == (int)HttpStatusCode.OK)
+                    {
+                        action_lblNotification = () =>
+                        {
+                            lblNotification.Text = "Không chữ ký số nào trong tài khoản!";
+                        };
+                        lblNotification.Invoke(action_lblNotification);
+                    }
+                    else
+                    {
+                        action_lblNotification = () =>
+                        {
+                            lblNotification.Text = "Gọi api lấy danh sách chữ ký số bị lỗi, ấn lấy CTS lại!";
+                        };
+                        lblNotification.Invoke(action_lblNotification);
+                    }
+                }
+            });
         }
     }
 }
