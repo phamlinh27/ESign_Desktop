@@ -1,4 +1,4 @@
-﻿namespace ESign_Desktop
+﻿namespace ProjectESignDemo
 {
     partial class frmMain
     {

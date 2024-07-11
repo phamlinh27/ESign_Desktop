@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace ESign_Desktop.models
+namespace ProjectESignDemo.models
 {
     public class PdfSignatureDescription
     {

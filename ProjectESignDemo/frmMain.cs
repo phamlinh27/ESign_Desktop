@@ -1,4 +1,4 @@
-﻿using ESign_Desktop.models;
+﻿using ProjectESignDemo.models;
 using HTTP.Library.models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Configuration;
 using System.ComponentModel;
 using System.Runtime.ConstrainedExecution;
 
-namespace ESign_Desktop
+namespace ProjectESignDemo
 {
     public partial class frmMain : Form
     {
