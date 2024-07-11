@@ -1,4 +1,4 @@
-﻿using ESign_Desktop.models;
+﻿using ProjectESignDemo.models;
 using HTTP.Library.actions;
 using HTTP.Library.models;
 using HTTP.Library.utils;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ESign_Desktop
+namespace ProjectESignDemo
 {
     public partial class frmLogin : Form
     {

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 
-namespace ESign_Desktop.models
+namespace ProjectESignDemo.models
 {
     public class XmlSignatureInfoDto
     {

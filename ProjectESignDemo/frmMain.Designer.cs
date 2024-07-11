@@ -1,4 +1,4 @@
-﻿namespace ESign_Desktop
+﻿namespace ProjectESignDemo
 {
     partial class frmMain
     {
@@ -44,7 +44,7 @@
             this.btnImgSignature = new System.Windows.Forms.Button();
             this.txtContentSign = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtTransID = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.btnSeachTransID = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -213,14 +213,14 @@
             this.label5.TabIndex = 15;
             this.label5.Text = "Nội dung cks";
             // 
-            // textBox1
+            // txtTransID
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.textBox1.Location = new System.Drawing.Point(151, 169);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(292, 26);
-            this.textBox1.TabIndex = 6;
+            this.txtTransID.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtTransID.Location = new System.Drawing.Point(151, 169);
+            this.txtTransID.Name = "txtTransID";
+            this.txtTransID.ReadOnly = true;
+            this.txtTransID.Size = new System.Drawing.Size(292, 26);
+            this.txtTransID.TabIndex = 6;
             // 
             // label6
             // 
@@ -242,6 +242,7 @@
             this.btnSeachTransID.TabIndex = 7;
             this.btnSeachTransID.Text = "Tra cứu";
             this.btnSeachTransID.UseVisualStyleBackColor = true;
+            this.btnSeachTransID.Click += new System.EventHandler(this.btnSeachTransID_Click);
             // 
             // frmMain
             // 
@@ -251,7 +252,7 @@
             this.ClientSize = new System.Drawing.Size(558, 295);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtTransID);
             this.Controls.Add(this.txtContentSign);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtImgSignature);
@@ -298,7 +299,7 @@
         private System.Windows.Forms.Button btnImgSignature;
         private System.Windows.Forms.TextBox txtContentSign;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtTransID;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnSeachTransID;
     }

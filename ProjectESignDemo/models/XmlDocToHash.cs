@@ -1,4 +1,4 @@
-﻿namespace ESign_Desktop.models
+﻿namespace ProjectESignDemo.models
 {
     public class XmlDocToHash
     {

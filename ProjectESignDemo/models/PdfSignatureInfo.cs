@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ESign_Desktop.models
+namespace ProjectESignDemo.models
 {
     public enum PDFSignatureColor
     {

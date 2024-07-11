@@ -1,4 +1,4 @@
-﻿using ESign_Desktop.models;
+﻿using ProjectESignDemo.models;
 using HTTP.Library.models;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,9 @@ using System.IO;
 using System.Net;
 using System.Configuration;
 using System.ComponentModel;
+using System.Runtime.ConstrainedExecution;
 
-namespace ESign_Desktop
+namespace ProjectESignDemo
 {
     public partial class frmMain : Form
     {
@@ -98,7 +99,9 @@ namespace ESign_Desktop
                 MessageBox.Show(ex.ToString());
             }
         }
-
+        response_data<SignRespone> _res_signing = new response_data<SignRespone>();
+        CertificateRespone _cert;
+        CalculateLocalHashResult _file_to_sign;
         private void btnSign_Click(object sender, EventArgs e)
         {
             string message_sign = "Gọi api ký thất bại!"; // Thông báo ký
@@ -107,7 +110,7 @@ namespace ESign_Desktop
             string fileName = Path.GetFileName(txtPathSign.Text);
 
             // Lấy chữ ký số được chọn để ký
-            CertificateRespone cert = list_cert[cbbList_Cert.SelectedIndex];
+            _cert = list_cert[cbbList_Cert.SelectedIndex];
 
             btnLogout.Enabled = false;
             btnPathChooseSign.Enabled = false;
@@ -122,54 +125,23 @@ namespace ESign_Desktop
 
             run_backgroud(() =>
             {
+                string _trasid = "";
+                bool _tras_button = false;
                 try
                 {
                     // Hash file
-                    CalculateLocalHashResult info_file_hash = hash_document_api(cert);
-
+                    _file_to_sign = hash_document_api(_cert);
                     // Gọi api ký
-                    response_data<SignRespone> res_signing = signing_file_hash(cert, fileName, info_file_hash);
+                    _res_signing = signing_file_hash(_cert, fileName, _file_to_sign);
 
-                    if (res_signing.code == (int)HttpStatusCode.OK && !string.IsNullOrEmpty(res_signing.data.transactionId))
+                    if (_res_signing.code == (int)HttpStatusCode.OK && !string.IsNullOrEmpty(_res_signing.data.transactionId))
                     {
-                        message_sign = "";
-                        SignRespone signing = res_signing.data;
-
-                        bool checkout = false; // biến điều khiển vòng lặp trong 120s
-                        bool is_signed = false; // biến check xem đã ký hay bị từ chối
-                        SignChecker signchecker = new SignChecker(); // Khởi tạo kết quả gọi api check trạng thái ký
-
-                        // vòng lặp check ký trong thời gian định trước
-                        while (!checkout)
-                        {
-                            // gọi api check trạng thái ký 
-                            signchecker = signed_status(signing.transactionId);
-
-                            if (signchecker.status == "SUCCESS") // ký thành công
-                            {
-                                is_signed = true;
-                                checkout = true;
-                                message_sign = "Ký thành công!";
-                            }
-                            else if (signchecker.status == "FAILED") // ký thất bại
-                            {
-                                checkout = true;
-                                message_sign = "Phiên ký bị từ chối!";
-                            }
-
-                        }
-                        if (is_signed) // nếu ký thành công
-                        {
-                            MessageBox.Show(message_sign, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            attach_digital_signature_api(cert, info_file_hash, signchecker);
-                        }
-                        else
-                        {
-                            MessageBox.Show(message_sign, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
+                        _trasid = _res_signing.data.transactionId;
+                        _tras_button = true;
                     }
                     else
                     {
+                        _trasid = "";
                         MessageBox.Show(message_sign, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -179,17 +151,8 @@ namespace ESign_Desktop
                 }
                 Action action_loader = () =>
                 {
-                    lblNotification.Text = message_sign;
-                    btnLogout.Enabled = true;
-                    btnPathChooseSign.Enabled = true;
-                    btnImgSignature.Enabled = true;
-                    btnImgLogo.Enabled = true;
-                    btnSign.Enabled = true;
-                    cbbList_Cert.Enabled = true;
-                    txtImgLogo.Enabled = true;
-                    txtImgSignature.Enabled = true;
-                    txtPathSign.Enabled = true;
-                    txtContentSign.Enabled = true;
+                    txtTransID.Text = _trasid;
+                    btnSeachTransID.Enabled = _tras_button;
                 };
                 lblNotification.Invoke(action_loader);
             });
@@ -641,6 +604,77 @@ namespace ESign_Desktop
 
             frmLogin.Show();
             this.Hide();
+        }
+
+        private void btnSeachTransID_Click(object sender, EventArgs e)
+        {
+            string message_sign = "Gọi api ký thất bại!"; // Thông báo ký
+            message_sign = "";
+            SignRespone signing = _res_signing.data;
+
+            bool checkout = false; // biến điều khiển vòng lặp trong 120s
+            bool is_signed = false; // biến check xem đã ký hay bị từ chối
+            SignChecker signchecker = new SignChecker(); // Khởi tạo kết quả gọi api check trạng thái ký
+
+            btnSeachTransID.Enabled = false;
+            run_backgroud(() =>
+            {
+                string _trasid = "";
+                bool _tras_button = false;
+                try
+                {
+                    // vòng lặp check ký trong thời gian định trước
+                    while (!checkout)
+                    {
+                        // gọi api check trạng thái ký 
+                        signchecker = signed_status(signing.transactionId);
+
+                        if (signchecker.status == "SUCCESS") // ký thành công
+                        {
+                            is_signed = true;
+                            checkout = true;
+                            message_sign = "Ký thành công!";
+                        }
+                        else if (signchecker.status == "FAILED") // ký thất bại
+                        {
+                            checkout = true;
+                            message_sign = "Phiên ký bị từ chối!";
+                        }
+                        Thread.Sleep(2000);
+                    }
+                    if (is_signed) // nếu ký thành công
+                    {
+                        MessageBox.Show(message_sign, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        attach_digital_signature_api(_cert, _file_to_sign, signchecker);
+                    }
+                    else
+                    {
+                        MessageBox.Show(message_sign, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Đã có lỗi sảy ra: " + ex.ToString(), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                Action action_loader = () =>
+                {
+                    lblNotification.Text = message_sign;
+                    btnLogout.Enabled = true;
+                    btnPathChooseSign.Enabled = true;
+                    btnImgSignature.Enabled = true;
+                    btnImgLogo.Enabled = true;
+                    btnSign.Enabled = true;
+                    cbbList_Cert.Enabled = true;
+                    txtImgLogo.Enabled = true;
+                    txtImgSignature.Enabled = true;
+                    txtPathSign.Enabled = true;
+                    txtContentSign.Enabled = true;
+                    btnSeachTransID.Enabled = true;
+                };
+                lblNotification.Invoke(action_loader);
+            });
+
+            
         }
     }
 }
