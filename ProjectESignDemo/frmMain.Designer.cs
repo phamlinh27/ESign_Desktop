@@ -47,6 +47,7 @@
             this.txtTransID = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.btnSeachTransID = new System.Windows.Forms.Button();
+            this.btnGetCer = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbbList_Cert
@@ -244,12 +245,24 @@
             this.btnSeachTransID.UseVisualStyleBackColor = true;
             this.btnSeachTransID.Click += new System.EventHandler(this.btnSeachTransID_Click);
             // 
+            // btnGetCer
+            // 
+            this.btnGetCer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnGetCer.Location = new System.Drawing.Point(453, 8);
+            this.btnGetCer.Name = "btnGetCer";
+            this.btnGetCer.Size = new System.Drawing.Size(97, 29);
+            this.btnGetCer.TabIndex = 16;
+            this.btnGetCer.Text = "Lấy CTS";
+            this.btnGetCer.UseVisualStyleBackColor = true;
+            this.btnGetCer.Click += new System.EventHandler(this.btnGetCer_Click);
+            // 
             // frmMain
             // 
             this.AcceptButton = this.btnSign;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(558, 295);
+            this.Controls.Add(this.btnGetCer);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtTransID);
@@ -302,5 +315,6 @@
         private System.Windows.Forms.TextBox txtTransID;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnSeachTransID;
+        private System.Windows.Forms.Button btnGetCer;
     }
 }
