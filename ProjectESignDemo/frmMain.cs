@@ -617,7 +617,7 @@ namespace ProjectESignDemo
         {
             GetCer();
         }
-        void GetCer()
+        private void GetCer()
         {
             run_backgroud(() =>
             {
